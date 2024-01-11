@@ -1,156 +1,121 @@
+@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
-    id("com.android.application")
-    kotlin("android")
-    id("kotlin-kapt")
-    id("dagger.hilt.android.plugin")
-    id("kotlin-parcelize")
+    alias(libs.plugins.androidApp)
+    alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.androidHilt)
+    alias(libs.plugins.ksp)
+    id("kotlinx-serialization")
 }
 
 android {
-    compileSdk = 34
+    namespace = "com.pjh.composebase"
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "com.pjh.composebase"
-        minSdk = 24
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
-        multiDexEnabled = true
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
+        versionCode = libs.versions.versionCode.get().toInt()
+        versionName = "${libs.versions.major.get()}.${libs.versions.minor.get()}.${libs.versions.hotfix.get()}"
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
-        kapt {
-            arguments {
-                arg("room.schemaLocation", "$projectDir/schemas")
-            }
-        }
-    }
-
-    packagingOptions {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
     }
 
     buildTypes {
-        getByName("release") {
-            isMinifyEnabled = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+        release {
+            isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
+    }
+    tasks.withType<Test> {
+        useJUnitPlatform()
     }
     buildFeatures {
         compose = true
     }
-
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.4"
+        kotlinCompilerExtensionVersion = libs.versions.compose.compilerVersion.get()
+    }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
     }
 }
 
 dependencies {
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.ui.graphics)
-    implementation(libs.material3)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    val composeBom = platform(libs.androidx.compose.bom)
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
-    implementation(libs.androidx.compose.foundation)
+    implementation(libs.kotlin.stdlib)
+    implementation(libs.kotlin.serializationJson)
 
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.material)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    debugImplementation(libs.androidx.compose.ui.tooling)
+    implementation(libs.coroutines.android)
 
-    implementation(libs.androidx.compose.material3.windowSizeClass)
-    implementation(libs.androidx.activity.ktx)
-    implementation(libs.androidx.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.constraintlayout.compose)
-
-    //ViewModels
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.lifecycle.viewmodel.savedstate)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.navigation.compose)
-
-    //Hilt
-    // to libs
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    implementation(libs.androidx.appCompat)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.fragment)
+    implementation(libs.androidx.navigation.fragment)
+    implementation(libs.androidx.navigation.ui)
+    implementation(libs.androidx.recyclerView)
+    implementation(libs.androidx.constraintLayout)
+    implementation(libs.androidx.core)
+    implementation(libs.androidx.lifecycle.viewModel)
+    implementation(libs.androidx.room)
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.hilt.android)
+    ksp(libs.androidx.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
-    // Retrofit
-    implementation(libs.retrofit.core)
-    implementation(libs.retrofit.gson)
-    implementation(libs.okhttp.logging)
-    implementation(libs.okhttp)
+    implementation(libs.google.material)
 
-    //DataStore
-    implementation(libs.androidx.dataStore.core)
-    implementation(libs.androidx.dataStore.preferences)
+    implementation(libs.network.retrofit)
+    implementation(libs.network.retrofit.kotlinxSerializationConvert)
+    implementation(libs.network.okhttp)
+    implementation(libs.network.okhttp.logging)
 
-    //Accompanist
-    implementation(libs.accompanist.insets)
-    implementation(libs.accompanist.pager)
-    implementation(libs.accompanist.pager.indicators)
-    implementation(libs.accompanist.placeholder)
-    implementation(libs.accompanist.swiperefresh)
-    implementation(libs.accompanist.navigation.animation)
+    implementation(libs.compose.activity)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.foundation)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.runtime)
+    implementation(libs.compose.uiToolingPreview)
+    implementation(libs.compose.constraintLayout)
+    implementation(libs.compose.animation)
+    implementation(libs.coil)
+    implementation(libs.androidx.lifecycleRuntimeCompose)
 
-    //Room
-    implementation(libs.room.runtime)
-    kapt(libs.room.compiler)
+    implementation(libs.compose.keyboardState)
+    implementation(libs.kotlin.collectionsImmutable)
 
-    // optional - Kotlin Extensions and Coroutines support for Room
-    implementation(libs.room.ktx)
-    implementation(libs.room.runtime)
+    debugRuntimeOnly(libs.compose.uiTooling)
 
-    //Coil
-    implementation(libs.coil.kt.compose)
+    implementation(project(":core:design-system"))
+    implementation(project(":core:network"))
+    implementation(project(":core:design-system"))
+    implementation(project(":core:data:github"))
+    implementation(project(":core:domain:github"))
+    implementation(project(":core:database:github"))
+    implementation(project(":core:database:github-api"))
+    implementation(project(":feature:github-search"))
 
-    //Paging 3.0
-    implementation(libs.androidx.paging.compose)
-
-    //Json
-    implementation(libs.kotlinx.serialization.json)
-
-    //Chucker chucker_version
-    debugImplementation(libs.chucker)
-    releaseImplementation(libs.chucker.no.op)
-
-    //Splash
-    implementation(libs.androidx.core.splashscreen)
-
-    implementation(libs.lottie.compose)
-    implementation(libs.shimmer.compose)
-
-    implementation(libs.androidx.tracing.tracing)
-    implementation(libs.androidx.tracing.ktx)
-
-    // UI Tests
-    androidTestImplementation(libs.androidx.compose.ui.test)
-    debugImplementation(libs.androidx.compose.ui.testManifest)
-
-    testImplementation(libs.junit4)
-    androidTestImplementation(libs.androidx.test.ext)
-    androidTestImplementation(libs.androidx.test.espresso.core)
-}
-
-// Allow references to generated code
-kapt {
-    correctErrorTypes = true
+    libs.test.run {
+        testImplementation(androidx.core)
+        testImplementation(androidx.runner)
+        testImplementation(androidx.junit)
+        testImplementation(mockito.kotlin)
+        testImplementation(junit5)
+        testImplementation(junit5.engine)
+        testRuntimeOnly(junit5.vintage)
+        testImplementation(coroutines)
+        testImplementation(coroutines.turbine)
+    }
 }

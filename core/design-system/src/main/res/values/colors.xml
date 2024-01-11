@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="colorTransparent">#00000000</color>
+    <color name="colorPrimary">#212121</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#ffffff</color>
+
+    <color name="colorLoadingBackground">#66000000</color>
+
+    <color name="colorNavigationNotSelected">#757575</color>
+    <color name="colorNavigationSelected">#dedede</color>
+
+    <color name="colorBottomUserDivider">#dadada</color>
+    <color name="colorUserSectionTitle">#494949</color>
+
+    <color name="colorFabLabelBackgroundColor">#eaeaea</color>
+    <color name="colorFabLabelTextColor">#838383</color>
+    <color name="colorFabRippleBackgroundColor">#66ffffff</color>
+    <color name="colorFabBackgroundColor">#44000000</color>
+    <color name="colorErrorToastBackgroundColor">#dd000000</color>
+</resources>
