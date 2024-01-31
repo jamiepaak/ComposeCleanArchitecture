@@ -11,11 +11,15 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url = uri("https://maven.google.com")
-        }
 
     }
 }
 rootProject.name = "ComposeCleanArchitecture"
 include(":app")
+include(":core:network")
+include(":core:design-system")
+include(":core:data:github")
+include(":core:domain:github")
+include(":core:database:github")
+include(":core:database:github-api")
+include(":feature:github-search")
